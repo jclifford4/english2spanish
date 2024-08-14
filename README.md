@@ -16,4 +16,4 @@
 
 
 ## Pre-production Course Design Mockup
-![Course Mockup](/E2P-course-design-2024-08-13-1210.png)
+![Course Mockup](/E2S-course-design-2024-08-13-1210.png)
