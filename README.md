@@ -13,6 +13,7 @@
 - [ ] Animated exercises and explanations
 - [ ] One time (*inexpensive*) purchase for more in depth exercises
 - [ ] Word review / flash card system
+- [ ] Translations
 
 
 ## Pre-production Course Design Mockup
