@@ -1,0 +1,44 @@
+@page "/flashcard/complex"
+@rendermode InteractiveServer
+
+<div class="flashcard-container">
+
+    <div class="flashcard" >
+        <div class="text-container">
+            <div class="phrase">@englishPhrase</div>
+            <div class="description">@description.</div>
+        </div>
+    </div>
+
+        <form action="" method="get" class="form">
+            <div class="input-container">
+                <label for="answer">Answer</label>
+                <input class="answer-input" type="text" id="answer" name="answer" maxlength="256" autocomplete="off"/>
+                <div>
+                    <input @onclick="RevealAnswerCard" class="submit-btn" type="submit" value="Confirm" />
+                    <input @onclick="RevealAnswerCard" class="reveal-btn" type="submit" value="Reveal" />
+                </div>
+                
+            </div>
+        </form>
+
+    <div class="flashcard-answer @revealClass">
+        <div class="phrase-answer">@spanishPhraseAnswer</div>
+    </div>
+
+</div>
+
+
+@code
+{
+    private string description = "Adj";
+    private string englishPhrase = "Unfortuenately";
+    private string spanishPhraseAnswer = "Desafortunademente";
+    public bool isRevealed { get; set; } = false;
+    private string revealClass => isRevealed ? "reveal" : "";
+
+    private void RevealAnswerCard()
+    {
+        isRevealed = !isRevealed;
+    }
+}

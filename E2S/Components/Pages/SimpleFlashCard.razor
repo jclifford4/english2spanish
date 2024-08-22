@@ -1,14 +1,19 @@
+@page "/flashcard/simple"
 @rendermode InteractiveServer
 
-<div @onclick="RevealAnswerCard" class="flashcard" >
-    <div class="text-container">
-        <div class="phrase">@phrase</div>
-        <div class="description">@description.</div>
-    </div>
-</div>
+<div class="flashcard-container">
 
-<div class="flashcard-answer @revealClass">
-    <div class="phrase-answer">@phraseAnswer</div>
+    <div @onclick="RevealAnswerCard" class="flashcard" >
+        <div class="text-container">
+            <div class="phrase">@phrase</div>
+            <div class="description">@description.</div>
+        </div>
+    </div>
+
+    <div class="flashcard-answer @revealClass">
+        <div class="phrase-answer">@phraseAnswer</div>
+    </div>
+
 </div>
 
 
