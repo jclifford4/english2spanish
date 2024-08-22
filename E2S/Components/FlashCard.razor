@@ -1,0 +1,27 @@
+@rendermode InteractiveServer
+
+<div @onclick="RevealAnswerCard" class="flashcard" >
+    <div class="text-container">
+        <div class="phrase">@phrase</div>
+        <div class="description">@description.</div>
+    </div>
+</div>
+
+<div class="flashcard-answer @revealClass">
+    <div class="phrase-answer">@phraseAnswer</div>
+</div>
+
+
+@code
+{
+    private string description = "Adj";
+    private string phrase = "Desafortunademente";
+    private string phraseAnswer = "Unfortunately";
+    public bool isRevealed { get; set; } = false;
+    private string revealClass => isRevealed ? "reveal" : "";
+
+    private void RevealAnswerCard()
+    {
+        isRevealed = !isRevealed;
+    }
+}

@@ -1,0 +1,12 @@
+.outline {
+    padding-top: 5rem;
+    width: 100dvw;
+    height: 100dvh;
+    border: solid 1px red;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+    flex: 1;
+    justify-content: start;
+    align-items: center;
+}

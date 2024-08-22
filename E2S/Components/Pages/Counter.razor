@@ -8,12 +8,36 @@
 <p role="status">Current count: @currentCount</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="ChangeName">@currentName</button>
 
 @code {
     private int currentCount = 0;
+    private string currentName = "Hello";
+    private bool isHello = true;
+
 
     private void IncrementCount()
     {
         currentCount++;
+
+        if (currentCount >= 10)
+        {
+            isHello = false;
+            currentName = "Out of clicks";
+        }
+    }
+
+    private void ChangeName()
+    {
+        if (isHello)
+        {
+            currentName = "Bye";
+            isHello = false;
+        }
+        else if (!isHello)
+        {
+            currentName = "Hello";
+            isHello = true;
+        }
     }
 }
