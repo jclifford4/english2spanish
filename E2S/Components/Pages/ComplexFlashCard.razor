@@ -9,20 +9,20 @@
             <div class="description">@description.</div>
         </div>
     </div>
-
-        <form action="" method="get" class="form">
-            <div class="input-container">
-                <label for="answer">Answer</label>
-                <input class="answer-input" type="text" id="answer" name="answer" maxlength="256" autocomplete="off"/>
-                <div>
-                    <input @onclick="RevealAnswerCard" class="submit-btn" type="submit" value="Confirm" />
-                    <input @onclick="RevealAnswerCard" class="reveal-btn" type="submit" value="Reveal" />
-                </div>
-                
-            </div>
-        </form>
-
-    <div class="flashcard-answer @revealClass">
+  
+    <div class="input-container">
+        <div class="answer-container">
+            <label for="answer">Answer</label>
+            <input @oninput="UpdateUserAnswer" @onkeydown="RevealAnswerFromKeyPress" @bind="userAnswer" class="answer-input" spellcheck="false" type="text" id="answer" name="answer" maxlength="255" autocomplete="off"/>
+        </div>
+        <div class="submit-container">
+            <button @onclick="RevealAnswerCard" class="verify-btn">Verify</button>
+            <p>You typed: @userAnswer</p>
+        </div>
+        
+    </div>
+   
+    <div class="flashcard-answer @revealClass @revealColorClass">
         <div class="phrase-answer">@spanishPhraseAnswer</div>
     </div>
 
@@ -34,11 +34,51 @@
     private string description = "Adj";
     private string englishPhrase = "Unfortuenately";
     private string spanishPhraseAnswer = "Desafortunademente";
-    public bool isRevealed { get; set; } = false;
     private string revealClass => isRevealed ? "reveal" : "";
+    private bool isCorrect = false;
+
+    // Public Bindings
+    public string userAnswer { get; set; } = "";
+    public string revealColorClass => isCorrect ? "correct" : "wrong";
+    public bool isRevealed { get; set; } = false;
+
 
     private void RevealAnswerCard()
     {
-        isRevealed = !isRevealed;
+        CheckAnswerMatchResult();
+        isRevealed = true;
+        ClearUserInput();
+
     }
+
+    private void RevealAnswerFromKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            CheckAnswerMatchResult();
+            isRevealed = true;
+            ClearUserInput();
+        }
+
+
+    }
+
+    private void CheckAnswerMatchResult()
+    {
+        if (String.Equals(userAnswer.Trim(), spanishPhraseAnswer, StringComparison.OrdinalIgnoreCase))
+            isCorrect = true;
+        else
+            isCorrect = false;
+    }
+
+    private void UpdateUserAnswer(ChangeEventArgs e)
+    {
+        userAnswer = e.Value?.ToString() ?? string.Empty;
+    }
+
+    private void ClearUserInput()
+    {
+        userAnswer = "";
+    }
+
 }

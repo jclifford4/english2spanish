@@ -22,8 +22,10 @@
     private string description = "Adj";
     private string phrase = "Desafortunademente";
     private string phraseAnswer = "Unfortunately";
-    public bool isRevealed { get; set; } = false;
     private string revealClass => isRevealed ? "reveal" : "";
+
+    // Bindings
+    public bool isRevealed { get; set; } = false;
 
     private void RevealAnswerCard()
     {
