@@ -24,9 +24,9 @@
     text-align: center;
 }
 
-.flashcard:hover {
+/* .flashcard:hover {
     background-color: aqua;
-}
+} */
 
 .text-container {
     width: 100%;
@@ -94,7 +94,7 @@
 .flashcard-answer.reveal.wrong {
     opacity: 1;
     max-height: 300px;
-    background-color: red;
+    background-color: lightgray;
 }
 
 .phrase-answer {
@@ -138,3 +138,11 @@
     text-align: center;
     font-size: large;
 }
+
+/* .correct-letter {
+    color: green;
+}
+
+.incorrect-letter {
+    color: red;
+} */
