@@ -18,12 +18,7 @@
         <div class="submit-container">
             <button @onclick="RevealAnswerCard" class="verify-btn">Verify</button>
             <p>You typed: @userAnswer</p>
-        </div>
-        @* <div class="submit-container">
-            <button @onclick="FilterString" class="verify-btn">Verify</button>
-            <p>You typed: @userAnswer</p>
-        </div> *@
-        
+        </div>        
     </div>
    
     <div class="flashcard-answer @revealClass @revealColorClass">
@@ -36,8 +31,8 @@
 @code
 {
     private string description = "Adj";
-    private string englishPhrase = "Hello, how are you?";
-    private string spanishPhraseAnswer = "Hola, ¿Cómo estás?";
+    private string englishPhrase = "Hello Sir?";
+    private string spanishPhraseAnswer = "¡Hola Señor!";
     private string revealClass => isRevealed ? "reveal" : "";
     private bool isCorrect = false;
 
@@ -49,29 +44,18 @@
 
     private void RevealAnswerCard()
     {
-        @* CheckAnswerMatchResult(); *@
         isRevealed = true;
-        ClearUserInput();
-
+        @* DisplayFormattedAnswer(); *@
     }
 
     private void RevealAnswerFromKeyPress(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
         {
-            @* CheckAnswerMatchResult(); *@
             isRevealed = true;
-            ClearUserInput();
+            DisplayFormattedAnswer();
         }
     }
-
-    @* private void CheckAnswerMatchResult()
-    {
-        if (String.Equals(userAnswer.Trim(), spanishPhraseAnswer, StringComparison.OrdinalIgnoreCase))
-            isCorrect = true;
-        else
-            isCorrect = false;
-    } *@
 
     private void UpdateUserAnswer(ChangeEventArgs e)
     {
@@ -94,52 +78,114 @@
     private MarkupString DisplayFormattedAnswer()
     {
         var result = "";
-        string userInput = userAnswer;
+        string userInput = FilterString(userAnswer);
         string actualAnswer = spanishPhraseAnswer;
-        int minLength = Math.Min(userInput.Length, actualAnswer.Length); 
-        Console.WriteLine(userInput.Length);
-        Console.WriteLine(actualAnswer.Length);
+        int minLength = Math.Min(userInput.Length, actualAnswer.Length);
+        int answerLength = actualAnswer.Length; 
 
-       int correctIndex = 0, userIndex = 0;
+        Console.WriteLine(spanishPhraseAnswer);
+        Console.WriteLine(userInput);
 
-        while (correctIndex < actualAnswer.Length)
+        Dictionary<char, char> accentMap = 
+            new Dictionary<char, char>()
+                {
+                    {'a', 'á'},
+                    {'e', 'é'},
+                    {'i', 'í'},
+                    {'o', 'ó'},
+                    {'u', 'ú'},
+                    {'n', 'ñ'},
+                };
+
+        int correctIndex = 0, userIndex = 0;
+
+        // While user index is in range and answer index is in range
+        while (userIndex < minLength && correctIndex < answerLength)
         {
-            char correctChar = actualAnswer[correctIndex];
-
-            // If the character is a letter, compare with the user's answer
-            if (char.IsLetter(correctChar))
+            // If correct answer character is not a letter, append in black
+            if (!char.IsLetter(actualAnswer[correctIndex]) && actualAnswer[correctIndex] != ' ')
             {
-                if (userIndex < userAnswer.Length && char.ToUpper(correctChar) == char.ToUpper(userAnswer[userIndex]))
-                {
-                    result += $"<span style='color:green'>{correctChar}</span>";
-                }
-                else
-                {
-                    result += $"<span style='color:red'>{correctChar}</span>";
-                }
-                userIndex++;
+                result += $"<span style='color: black;'>{actualAnswer[correctIndex]}</span>";
+                correctIndex++;
+                continue;
             }
-            // If the character is not a letter, just add it to the result
+
+            // If we get to the end of the correct answer early break the loop
+            if (correctIndex >= actualAnswer.Length)
+                break;
+
+            // If correct answer has a space, append in black
+            if(actualAnswer[correctIndex] == ' ')
+            {
+                result += $"<span style='color: black;'>&nbsp;</span>";
+            }
+            // Else if the characters match, append in green
+            else if (char.ToLower(userInput[userIndex]) == char.ToLower(actualAnswer[correctIndex]))
+            {
+                result += $"<span style='color: green;'>{actualAnswer[correctIndex]}</span>";
+            }
+            // Else if it is an accented character
+            else if (accentMap.ContainsKey(char.ToLower(userInput[userIndex])))
+            {
+                // If it is an english letter without the accent but in the right place, append correct character in orange
+                if (accentMap[userInput[userIndex]] == actualAnswer[correctIndex])
+                    result += $"<span style='color: orange;'>{actualAnswer[correctIndex]}</span>";
+                // Else the character is wrong, and append correct character in red
+                else
+                    result += $"<span style='color: red;'>{actualAnswer[correctIndex]}</span>";
+            }
+            // Otherwise character is incorrect, append the correct one in red
             else
             {
-                if (correctChar == ' ')
-                {
-                    result += "&nbsp;";
-                }
-                else
-                {
-                    result += correctChar;
-                }
+                result += $"<span style='color: red;'>{actualAnswer[correctIndex]}</span>";
             }
-            correctIndex++;
-        }
 
-        // Handle any remaining user input if necessary
-        while (userIndex < userAnswer.Length)
-        {
-            result += $"<span style='color:red'>{userAnswer[userIndex]}</span>";
+            correctIndex++;
             userIndex++;
         }
+
+        // If the correct answer is longer than the user answer
+        if (actualAnswer.Length > userInput.Length)
+        {
+            // While in bounds of the correct answer array
+            while (correctIndex < actualAnswer.Length)
+            {
+                // If there is a space, append the html style space in black
+                if(actualAnswer[correctIndex] == ' ')
+                {
+                    result += $"<span style='color: black;'>&nbsp;</span>";
+                }
+                // Else if the character is not a letter, append in black
+                else if (!char.IsLetter(actualAnswer[correctIndex]))
+                {
+                    result += $"<span style='color: black;'>{actualAnswer[correctIndex]}</span>";
+                    correctIndex++; // jump to next char
+                    continue;
+                }
+                // Otherwise, the remaining characters are missing, therefore incorrect, append them in red
+                else
+                {
+                    result += $"<span style='color: red;'>{actualAnswer[correctIndex]}</span>";
+                }
+
+                correctIndex++;
+            }
+        }
+
+
+        // While there are remaining user input characters
+        while (userIndex < userInput.Length)
+        {
+            // Append underline space in purple to correct answer
+            if(userInput[userIndex] == ' ')
+                result += $"<span style='color: purple;'><u>&nbsp;</u></span>";
+            // Otherwise it is a letter append in purple
+            else
+                result += $"<span style='color: purple;'>{userInput[userIndex]}</span>";
+
+            userIndex++;
+        }
+
 
         return new MarkupString(result);
     }
