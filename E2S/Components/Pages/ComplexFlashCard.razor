@@ -42,21 +42,25 @@
     public bool isRevealed { get; set; } = false;
 
 
+    // Reveal flashcard on button press
     private void RevealAnswerCard()
     {
         isRevealed = true;
-        @* DisplayFormattedAnswer(); *@
+        DisplayFormattedAnswer();
     }
 
+    // Reveal flashcard pressing "Enter" in input box
     private void RevealAnswerFromKeyPress(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
         {
             isRevealed = true;
             DisplayFormattedAnswer();
+            ClearUserInput();
         }
     }
 
+    // Update user answer on input
     private void UpdateUserAnswer(ChangeEventArgs e)
     {
         userAnswer = e.Value?.ToString() ?? string.Empty;
@@ -178,10 +182,10 @@
         {
             // Append underline space in purple to correct answer
             if(userInput[userIndex] == ' ')
-                result += $"<span style='color: purple;'><u>&nbsp;</u></span>";
+                result += $"<span style='color: purple; opacity: 50%;'><u>&nbsp;</u></span>";
             // Otherwise it is a letter append in purple
             else
-                result += $"<span style='color: purple;'>{userInput[userIndex]}</span>";
+                result += $"<span style='color: purple; opacity: 50%;'>{userInput[userIndex]}</span>";
 
             userIndex++;
         }
