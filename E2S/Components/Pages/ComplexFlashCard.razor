@@ -12,17 +12,22 @@
   
     <div class="input-container">
         <div class="answer-container">
-            <label for="answer">Answer</label>
-            <input @oninput="UpdateUserAnswer" @onkeydown="RevealAnswerFromKeyPress" @bind="userAnswer" class="answer-input" spellcheck="false" type="text" id="answer" name="answer" maxlength="255" autocomplete="off"/>
+            @* <label for="answer">Answer</label> *@
+            <input placeholder="Type your translation..." disabled=@isRevealed @oninput="UpdateUserAnswer" @onkeydown="RevealAnswerFromKeyPress" @bind="userAnswer" class="answer-input @revealClass" spellcheck="false" type="text" id="answer" name="answer" maxlength="255" autocomplete="off"/>
         </div>
         <div class="submit-container">
-            <button @onclick="RevealAnswerCard" class="verify-btn">Verify</button>
-            <p>You typed: @userAnswer</p>
+            <button disabled=@isRevealed @onclick="RevealAnswerCard" class="verify-btn @revealClass">Verify</button>
         </div>        
+        @* <p>You typed: @userAnswer</p> *@
     </div>
    
     <div class="flashcard-answer @revealClass @revealColorClass">
-        <div class="phrase-answer">@(DisplayFormattedAnswer())</div>
+        <div class="phrase-answer @revealDiffButtons">@(DisplayFormattedAnswer())</div>
+    </div>
+    <div class="difficulty-container @revealClass">
+        <button disabled=@(DisableDiffButtons())   @onclick="EnableVerifyButton" class="easy-btn @revealDiffButtons">Easy</button>
+        <button disabled=@(DisableDiffButtons())   @onclick="EnableVerifyButton" class="medium-btn @revealDiffButtons">Medium</button>
+        <button disabled=@(DisableDiffButtons())  @onclick="EnableVerifyButton" class="hard-btn @revealDiffButtons">Hard</button>
     </div>
 
 </div>
@@ -34,6 +39,7 @@
     private string englishPhrase = "Hello Sir?";
     private string spanishPhraseAnswer = "¡Hola Señor!";
     private string revealClass => isRevealed ? "reveal" : "";
+    private string revealDiffButtons => isRevealed? "" : "reveal";
     private bool isCorrect = false;
 
     // Public Bindings
@@ -59,6 +65,16 @@
             DisplayFormattedAnswer();
             ClearUserInput();
         }
+    }
+
+    private bool DisableDiffButtons()
+    {
+        return !isRevealed;
+    }
+
+    private void EnableVerifyButton()
+    {
+        isRevealed = false;
     }
 
     // Update user answer on input
