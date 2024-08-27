@@ -1,0 +1,55 @@
+.difficulty-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    width: 0;
+    height: 4rem;
+    transition: opacity .5s ease-in-out, width .5s ease-in-out;
+    overflow: hidden;
+    padding: 0 .5rem 0 .5rem;
+    cursor: default;
+}
+
+.difficulty-container.reveal {
+    opacity: 1;
+    width: calc((6rem * 3) + 1rem);
+}
+
+.easy-btn,
+.medium-btn,
+.hard-btn {
+    width: 6rem;
+    height: 3rem;
+    border-radius: 10px;
+    border: 1px, grey, solid;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.easy-btn:hover,
+.medium-btn:hover,
+.hard-btn:hover {
+    transform: scale(1.1);
+    cursor: default;
+    /* background-color: darkcyan */
+}
+
+
+.easy-btn.reveal:hover,
+.medium-btn.reveal:hover,
+.hard-btn.reveal:hover {
+    cursor: pointer;
+}
+
+.easy-btn {
+    background-color: green;
+}
+
+.medium-btn {
+    background-color: yellow;
+}
+
+.hard-btn {
+    background-color: red;
+}

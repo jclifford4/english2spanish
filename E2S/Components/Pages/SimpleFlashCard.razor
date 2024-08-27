@@ -3,12 +3,14 @@
 
 <div class="flashcard-container">
 
-    <div @onclick="RevealAnswerCard" class="flashcard" >
+    <div @onclick="RevealAnswerCard" class="flashcard @revealClass" >
         <div class="text-container">
             <div class="phrase">@phrase</div>
             <div class="description">@description.</div>
         </div>
     </div>
+
+    <DifficultyButtons isRevealed=@isRevealed IsRevealChanged=@OnisRevealChanged  />
 
     <div class="flashcard-answer @revealClass">
         <div class="phrase-answer">@phraseAnswer</div>
@@ -19,16 +21,25 @@
 
 @code
 {
+    // TODO: description, english phrase, spanishPhraseAnswer will come from database
     private string description = "Adj";
     private string phrase = "Desafortunademente";
     private string phraseAnswer = "Unfortunately";
     private string revealClass => isRevealed ? "reveal" : "";
+    
 
     // Bindings
     public bool isRevealed { get; set; } = false;
 
+    // Reveal card and child difficulty buttons
     private void RevealAnswerCard()
     {
         isRevealed = !isRevealed;
+    }
+
+    // Call back method from difficulty button onClick
+    private void OnisRevealChanged(bool newIsRevealed)
+    {
+        isRevealed = newIsRevealed;
     }
 }

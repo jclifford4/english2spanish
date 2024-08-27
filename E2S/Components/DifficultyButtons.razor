@@ -1,0 +1,35 @@
+@rendermode InteractiveServer
+
+
+<div class="difficulty-container @revealClass">
+    <button disabled=@(DisableDifficultyButtons())   @onclick="EnableDifficultyButtons" class="easy-btn @revealDiffButtons">Easy</button>
+    <button disabled=@(DisableDifficultyButtons())   @onclick="EnableDifficultyButtons" class="medium-btn @revealDiffButtons">Medium</button>
+    <button disabled=@(DisableDifficultyButtons())   @onclick="EnableDifficultyButtons" class="hard-btn @revealDiffButtons">Hard</button>
+</div>
+
+
+@code
+{
+    [Parameter]
+    public bool isRevealed { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsRevealChanged { get; set; }
+
+    private bool isButtonRevealed = false;
+    
+    private string revealDiffButtons => isRevealed? "reveal" : "";
+    private string revealClass => isRevealed? "reveal" : "";
+
+
+    private void EnableDifficultyButtons()
+    {
+        isRevealed = false;
+        IsRevealChanged.InvokeAsync(isRevealed);
+    }
+
+    private bool DisableDifficultyButtons() 
+    {
+        return !isRevealed;
+    }
+}

@@ -10,24 +10,23 @@
         </div>
     </div>
   
-    <div class="input-container">
+    
+    <div class="input-container @revealClass">
         <div class="answer-container">
             @* <label for="answer">Answer</label> *@
-            <input placeholder="Type your translation..." disabled=@isRevealed @oninput="UpdateUserAnswer" @onkeydown="RevealAnswerFromKeyPress" @bind="userAnswer" class="answer-input @revealClass" spellcheck="false" type="text" id="answer" name="answer" maxlength="255" autocomplete="off"/>
+            <input placeholder="Type your translation..." disabled=@isRevealed @oninput="UpdateUserAnswer" @onkeydown="RevealAnswerFromKeyPress" @bind="userAnswer" class="answer-input @revealClass" spellcheck="false" type="text" id="answer" name="answer" maxlength="255" autocomplete="off" />
         </div>
-        <div class="submit-container">
+        @* <div class="submit-container">
             <button disabled=@isRevealed @onclick="RevealAnswerCard" class="verify-btn @revealClass">Verify</button>
-        </div>        
+        </div>         *@
         @* <p>You typed: @userAnswer</p> *@
     </div>
+
+    <DifficultyButtons isRevealed=@isRevealed IsRevealChanged=@OnisRevealChanged  />
+
    
-    <div class="flashcard-answer @revealClass @revealColorClass">
+    <div class="flashcard-answer @revealClass">
         <div class="phrase-answer @revealDiffButtons">@(DisplayFormattedAnswer())</div>
-    </div>
-    <div class="difficulty-container @revealClass">
-        <button disabled=@(DisableDiffButtons())   @onclick="EnableVerifyButton" class="easy-btn @revealDiffButtons">Easy</button>
-        <button disabled=@(DisableDiffButtons())   @onclick="EnableVerifyButton" class="medium-btn @revealDiffButtons">Medium</button>
-        <button disabled=@(DisableDiffButtons())  @onclick="EnableVerifyButton" class="hard-btn @revealDiffButtons">Hard</button>
     </div>
 
 </div>
@@ -35,6 +34,7 @@
 
 @code
 {
+    // TODO: description, english phrase, spanishPhraseAnswer will come from database
     private string description = "Adj";
     private string englishPhrase = "Hello Sir?";
     private string spanishPhraseAnswer = "¡Hola Señor!";
@@ -44,9 +44,7 @@
 
     // Public Bindings
     public string userAnswer { get; set; } = "";
-    public string revealColorClass => isCorrect ? "correct" : "wrong";
     public bool isRevealed { get; set; } = false;
-
 
     // Reveal flashcard on button press
     private void RevealAnswerCard()
@@ -56,10 +54,16 @@
         ClearUserInput();
     }
 
+    // Call back from child to change card visibilty from difficutly onClick
+    private void OnisRevealChanged(bool newIsRevealed)
+    {
+        isRevealed = newIsRevealed;
+    }
+
     // Reveal flashcard pressing "Enter" in input box
     private void RevealAnswerFromKeyPress(KeyboardEventArgs e)
     {
-        if (e.Key == "Enter")
+        if (e.Key == "Enter" && e.ShiftKey)
         {
             isRevealed = true;
             DisplayFormattedAnswer();
@@ -79,13 +83,13 @@
 
     // Update user answer on input
     private void UpdateUserAnswer(ChangeEventArgs e)
-    {
+    {  
         userAnswer = e.Value?.ToString() ?? string.Empty;
     }
 
     private void ClearUserInput()
     {
-        userAnswer = "";
+        userAnswer = string.Empty;
     }
 
     // Filters the string to only contain spaces and letters
@@ -116,6 +120,12 @@
                     {'o', 'ó'},
                     {'u', 'ú'},
                     {'n', 'ñ'},
+                    {'A', 'Á'},
+                    {'E', 'É'},
+                    {'I', 'Í'},
+                    {'O', 'Ó'},
+                    {'U', 'Ú'},
+                    {'N', 'Ñ'},
                 };
 
         int correctIndex = 0, userIndex = 0;
@@ -146,7 +156,7 @@
                 result += $"<span style='color: green;'>{actualAnswer[correctIndex]}</span>";
             }
             // Else if it is an accented character
-            else if (accentMap.ContainsKey(char.ToLower(userInput[userIndex])))
+            else if (accentMap.ContainsKey(userInput[userIndex]))
             {
                 // If it is an english letter without the accent but in the right place, append correct character in orange
                 if (accentMap[userInput[userIndex]] == actualAnswer[correctIndex])
